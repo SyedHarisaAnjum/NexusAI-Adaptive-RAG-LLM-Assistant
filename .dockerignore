@@ -1,0 +1,17 @@
+# Keep secrets, local data and anything not needed at runtime out of the image.
+.env
+.env.*
+.venv/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+data/
+backups/
+frontend/
+tests/
+docs/
+*.md
+docker-compose.yml
+render.yaml

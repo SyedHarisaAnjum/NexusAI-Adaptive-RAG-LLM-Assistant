@@ -1,0 +1,48 @@
+# Render Blueprint: deploys the API (Docker + persistent disk) and the React frontend
+# (static site) together. In Render: New > Blueprint > select this repository.
+# Values marked `sync: false` are entered in the Render dashboard - never committed.
+services:
+  - type: web
+    name: ai-qa-assistant-api
+    runtime: docker
+    plan: starter            # persistent disks require a paid instance type
+    region: singapore
+    healthCheckPath: /health
+    disk:
+      name: app-data
+      mountPath: /data       # DATA_DIR=/data/app and BACKUP_DIR=/data/backups (see Dockerfile)
+      sizeGB: 1
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true  # Render generates a random secret
+      - key: CORS_ORIGINS
+        sync: false          # e.g. https://ai-qa-assistant-web.onrender.com
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
+      - key: DEMO_USER_EMAIL
+        sync: false
+      - key: DEMO_USER_PASSWORD
+        sync: false
+
+  - type: web
+    name: ai-qa-assistant-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false          # e.g. https://ai-qa-assistant-api.onrender.com
+      - key: VITE_DEMO_EMAIL
+        sync: false
+      - key: VITE_DEMO_PASSWORD
+        sync: false

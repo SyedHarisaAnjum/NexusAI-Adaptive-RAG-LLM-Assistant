@@ -1,0 +1,15 @@
+# Secrets - only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Runtime data and backups (users, documents, vectors, sessions)
+data/
+backups/
+*.tmp

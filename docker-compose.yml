@@ -1,0 +1,18 @@
+# Run the production image locally:  docker compose up --build
+# Requires GEMINI_API_KEY and JWT_SECRET in .env (see .env.example).
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      ENVIRONMENT: production
+      DATA_DIR: /data/app
+      BACKUP_DIR: /data/backups
+    volumes:
+      - app-data:/data
+    restart: unless-stopped
+
+volumes:
+  app-data:
